@@ -396,15 +396,13 @@ def main():
 
         print("Done!")  # # Main runner
 
-main()
-#
-# try:
-#     main()
-#
-# except Exception as e:
-#     print("Got unexpected exception. probably a bug, please report it.")
-#     print("")
-#     print(e.message)
-#     print("")
-#
-#     sys.exit(1)
+try:
+    main()
+
+except Exception as e:
+    print("Got unexpected exception. probably a bug, please report it.")
+    print("")
+    print(e.message)
+    print("")
+
+    sys.exit(1)
