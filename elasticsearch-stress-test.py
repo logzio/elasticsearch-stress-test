@@ -5,11 +5,14 @@
 # Written by Roi Rav-Hon @ Logz.io (roi@logz.io)
 #
 
+import signal
+import sys
+
 # Using argparse to parse cli arguments
 import argparse
 
 # Import threading essentials
-from threading import Lock, Thread, Condition
+from threading import Lock, Thread, Condition, Event
 
 # For randomizing
 import string
@@ -84,6 +87,7 @@ es = None  # Will hold the elasticsearch session
 success_lock = Lock()
 fail_lock = Lock()
 size_lock = Lock()
+shutdown_event = Event()
 
 
 # Helper functions
@@ -183,7 +187,7 @@ def fill_documents(documents_templates):
 
 def client_worker(es, indices, STARTED_TIMESTAMP):
     # Running until timeout
-    while not has_timeout(STARTED_TIMESTAMP):
+    while (not has_timeout(STARTED_TIMESTAMP)) and (not shutdown_event.is_set()):
 
         curr_bulk = ""
 
@@ -302,7 +306,7 @@ def print_stats_worker(STARTED_TIMESTAMP):
     lock.acquire()
 
     # Print the stats every STATS_FREQUENCY seconds
-    while not has_timeout(STARTED_TIMESTAMP):
+    while (not has_timeout(STARTED_TIMESTAMP)) and (not shutdown_event.is_set()):
 
         # Wait for timeout
         lock.wait(STATS_FREQUENCY)
@@ -321,6 +325,7 @@ def main():
     STARTED_TIMESTAMP = int(time.time())
 
     for esaddress in args.es_address:
+        print("")
         print(esaddress)
         try:
             # Initiate the elasticsearch session
@@ -340,6 +345,16 @@ def main():
         indices = generate_indices(es)
         all_indecies.extend(indices)
 
+        try:
+            #wait for cluster to be green
+            es.cluster.health(wait_for_status='green', master_timeout='600s', timeout='600s')
+        except Exception as e:
+            print("Cluster timeout....")
+            print("Cleaning up created indices.. "),
+
+            cleanup_indices(es, indices)
+            continue
+
         print("Generating documents and workers.. ")  # Generate the clients
         clients.extend(generate_clients(es, indices, STARTED_TIMESTAMP))
 
@@ -350,9 +365,6 @@ def main():
     print("The test would run for {0} seconds, but it might take a bit more "
           "because we are waiting for current bulk operation to complete. \n".format(NUMBER_OF_SECONDS))
 
-    # wait for the indecies to be created
-    time.sleep(30)
-
     # Run the clients!
     map(lambda thread: thread.start(), clients)
 
@@ -361,8 +373,17 @@ def main():
     stats_thread.daemon = True
     stats_thread.start()
 
-    # And join them all but the stats, that we don't care about
-    map(lambda thread: thread.join(), clients)
+    for c in clients:
+       while c.is_alive():
+            try:
+                c.join(timeout=0.1)
+            except KeyboardInterrupt:
+                print("")
+                print "Ctrl-c received! Sending kill to threads..."
+                shutdown_event.set()
+                time.sleep(10)
+                print("Cleaning up created indices.. "),
+                cleanup_indices(es, all_indecies)
 
     print("\nTest is done! Final results:")
     print_stats(STARTED_TIMESTAMP)
@@ -375,13 +396,15 @@ def main():
 
         print("Done!")  # # Main runner
 
-
-try:
-    main()
-
-except Exception as e:
-    print("Got unexpected exception. probably a bug, please report it.")
-    print("")
-    print(e.message)
-
-    sys.exit(1)
+main()
+#
+# try:
+#     main()
+#
+# except Exception as e:
+#     print("Got unexpected exception. probably a bug, please report it.")
+#     print("")
+#     print(e.message)
+#     print("")
+#
+#     sys.exit(1)
