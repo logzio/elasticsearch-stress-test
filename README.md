@@ -20,11 +20,11 @@ The generation of documents is being processed before the run, so it will not ov
 ### Mandatory Parameters
 | Parameter | Description |
 | --- | --- |
-| `es_address` | Address of the Elasticsearch cluster (no protocol and port) |
-| `indices` | Number of indices to write to |
-| `documents` | Number of template documents that hold the same mapping |
-| `clients` | Number of threads that send bulks to ES |
-| `seconds` | How long should the test run. Note: it might take a bit longer, as sending of all bulks who's creation has been initiated is allowed |
+| `--es_address` | Address of the Elasticsearch cluster (no protocol and port) |
+| `--indices` | Number of indices to write to |
+| `--documents` | Number of template documents that hold the same mapping |
+| `--clients` | Number of threads that send bulks to ES |
+| `--seconds` | How long should the test run. Note: it might take a bit longer, as sending of all bulks who's creation has been initiated is allowed |
 
 
 ### Optional Parameters
