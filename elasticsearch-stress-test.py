@@ -385,7 +385,20 @@ def main():
                 print("")
                 print "Ctrl-c received! Sending kill to threads..."
                 shutdown_event.set()
-                time.sleep(10)
+                
+                # set loop flag true to get into loop
+                flag = True
+                while flag:
+                    #sleep 2 secs that we don't loop to often
+                    sleep(2)
+                    # set loop flag to false. If there is no thread still alive it will stay false
+                    flag = False
+                    # loop through each running thread and check if it is alive
+                    for t in threading.enumerate():
+                        # if one single thread is still alive repeat the loop
+                        if t.isAlive():
+                            flag = True
+                            
                 print("Cleaning up created indices.. "),
                 cleanup_indices(es, all_indecies)
 
