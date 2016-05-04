@@ -54,6 +54,8 @@ parser.add_argument("--max-size-per-field", type=int, default=1000, help="Max co
 parser.add_argument("--no-cleanup", default=False, action='store_true', help="Don't delete the indices upon finish")
 parser.add_argument("--stats-frequency", type=int, default=30,
                     help="Number of seconds to wait between stats prints (default 30)")
+parser.add_argument("--not-green", dest="green", action="store_false")
+parser.set_defaults(green=True)
 
 # Parse the arguments
 args = parser.parse_args()
@@ -70,6 +72,7 @@ MAX_FIELDS_PER_DOCUMENT = args.max_fields_per_document
 MAX_SIZE_PER_FIELD = args.max_size_per_field
 NO_CLEANUP = args.no_cleanup
 STATS_FREQUENCY = args.stats_frequency
+WAIT_FOR_GREEN = args.green
 
 # timestamp placeholder
 STARTED_TIMESTAMP = 0
@@ -346,8 +349,9 @@ def main():
         all_indecies.extend(indices)
 
         try:
-            #wait for cluster to be green
-            es.cluster.health(wait_for_status='green', master_timeout='600s', timeout='600s')
+            #wait for cluster to be green if nothing else is set
+            if WAIT_FOR_GREEN:
+                es.cluster.health(wait_for_status='green', master_timeout='600s', timeout='600s')
         except Exception as e:
             print("Cluster timeout....")
             print("Cleaning up created indices.. "),
