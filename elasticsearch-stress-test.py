@@ -326,7 +326,7 @@ def main():
 
     for esaddress in args.es_address:
         print("")
-        print(esaddress)
+        print("Starting initialization of {0}".format(esaddress))
         try:
             # Initiate the elasticsearch session
             es = Elasticsearch(esaddress)
