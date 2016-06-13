@@ -20,23 +20,24 @@ The generation of documents is being processed before the run, so it will not ov
 ### Mandatory Parameters
 | Parameter | Description |
 | --- | --- |
-| `es_address` | Address of the Elasticsearch cluster (no protocol and port) |
-| `indices` | Number of indices to write to |
-| `documents` | Number of template documents that hold the same mapping |
-| `clients` | Number of threads that send bulks to ES |
-| `seconds` | How long should the test run. Note: it might take a bit longer, as sending of all bulks who's creation has been initiated is allowed |
+| `--es_address` | Address of the Elasticsearch cluster (no protocol and port) |
+| `--indices` | Number of indices to write to |
+| `--documents` | Number of template documents that hold the same mapping |
+| `--clients` | Number of threads that send bulks to ES |
+| `--seconds` | How long should the test run. Note: it might take a bit longer, as sending of all bulks who's creation has been initiated is allowed |
 
 
 ### Optional Parameters
-| Parameter | Description |
-| --- | --- |
-| `--number-of-shards` | How many shards per index |
-| `--number-of-replicas` | How many replicas per index |
-| `--bulk-size` | How many documents each bulk request should contain |
-| `--max-fields-per-document` | What is the maximum number of fields each document template should hold |
-| `--max-size-per-field` | When populating the templates, what is the maximum length of the data each field would get |
-| `--no-cleanup` | Boolean field. Don't delete the indices after completion |
-| `--stats-frequency` | How frequent to show the statistics |
+| Parameter | Description | Default
+| --- | --- | --- |
+| `--number-of-shards` | How many shards per index | |
+| `--number-of-replicas` | How many replicas per index | |
+| `--bulk-size` | How many documents each bulk request should contain | |
+| `--max-fields-per-document` | What is the maximum number of fields each document template should hold | |
+| `--max-size-per-field` | When populating the templates, what is the maximum length of the data each field would get | |
+| `--no-cleanup` | Boolean field. Don't delete the indices after completion | |
+| `--stats-frequency` | How frequent to show the statistics | |
+| `--not-green` | Script doesn't wait for the cluster to be green | False
 
 ### Contribution
 You are more then welcome!
