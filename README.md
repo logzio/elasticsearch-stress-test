@@ -30,14 +30,14 @@ The generation of documents is being processed before the run, so it will not ov
 ### Optional Parameters
 | Parameter | Description | Default
 | --- | --- | --- |
-| `--number-of-shards` | How many shards per index | |
-| `--number-of-replicas` | How many replicas per index | |
-| `--bulk-size` | How many documents each bulk request should contain | |
-| `--max-fields-per-document` | What is the maximum number of fields each document template should hold | |
-| `--max-size-per-field` | When populating the templates, what is the maximum length of the data each field would get | |
-| `--no-cleanup` | Boolean field. Don't delete the indices after completion | |
-| `--stats-frequency` | How frequent to show the statistics | |
-| `--not-green` | Script doesn't wait for the cluster to be green | False
+| `--number-of-shards` | How many shards per index |3|
+| `--number-of-replicas` | How many replicas per index |1|
+| `--bulk-size` | How many documents each bulk request should contain |1000|
+| `--max-fields-per-document` | What is the maximum number of fields each document template should hold |100|
+| `--max-size-per-field` | When populating the templates, what is the maximum length of the data each field would get |1000|
+| `--no-cleanup` | Boolean field. Don't delete the indices after completion |False|
+| `--stats-frequency` | How frequent to show the statistics |30|
+| `--not-green` | Script doesn't wait for the cluster to be green |False|
 
 
 ### Examples
