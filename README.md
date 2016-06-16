@@ -20,7 +20,7 @@ The generation of documents is being processed before the run, so it will not ov
 ### Mandatory Parameters
 | Parameter | Description |
 | --- | --- |
-| `--es_address` | Address of the Elasticsearch cluster (no protocol and port) |
+| `--es_address` | Address of the Elasticsearch cluster (no protocol and port). You can supple mutiple clusters here, but only **one** node in each cluster (preferably the client node) |
 | `--indices` | Number of indices to write to |
 | `--documents` | Number of template documents that hold the same mapping |
 | `--clients` | Number of threads that send bulks to ES |
