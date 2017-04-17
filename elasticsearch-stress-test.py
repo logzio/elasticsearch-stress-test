@@ -370,7 +370,8 @@ def main():
           "because we are waiting for current bulk operation to complete. \n".format(NUMBER_OF_SECONDS))
 
     # Run the clients!
-    map(lambda thread: thread.start(), clients)
+    for d in clients:
+        d.start()
 
     # Create and start the print stats thread
     stats_thread = Thread(target=print_stats_worker, args=[STARTED_TIMESTAMP])
@@ -383,7 +384,7 @@ def main():
                 c.join(timeout=0.1)
             except KeyboardInterrupt:
                 print("")
-                print "Ctrl-c received! Sending kill to threads..."
+                print("Ctrl-c received! Sending kill to threads...")
                 shutdown_event.set()
                 
                 # set loop flag true to get into loop
