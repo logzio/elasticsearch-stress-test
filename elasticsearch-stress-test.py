@@ -332,7 +332,10 @@ def main():
         print("Starting initialization of {0}".format(esaddress))
         try:
             # Initiate the elasticsearch session
-            es = Elasticsearch(esaddress)
+            # We increase the timeout here from the default value (10 seconds)
+            # to ensure we wait for requests to finish even if the cluster is overwhelmed
+            # and it takes a bit longer to process one bulk.
+            es = Elasticsearch(esaddress, timeout=60)
 
         except Exception as e:
             print("Could not connect to elasticsearch!")
