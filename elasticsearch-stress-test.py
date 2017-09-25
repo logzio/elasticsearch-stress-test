@@ -349,7 +349,7 @@ def main():
         print("Creating indices.. ")
 
         indices = generate_indices(es)
-        all_indicies.extend(indices)
+        all_indices.extend(indices)
 
         try:
             #wait for cluster to be green if nothing else is set
@@ -404,7 +404,7 @@ def main():
                             flag = True
                             
                 print("Cleaning up created indices.. "),
-                cleanup_indices(es, all_indicies)
+                cleanup_indices(es, all_indices)
 
     print("\nTest is done! Final results:")
     print_stats(STARTED_TIMESTAMP)
@@ -413,7 +413,7 @@ def main():
     if not NO_CLEANUP:
         print("Cleaning up created indices.. "),
 
-        cleanup_indices(es, all_indicies)
+        cleanup_indices(es, all_indices)
 
         print("Done!")  # # Main runner
 
