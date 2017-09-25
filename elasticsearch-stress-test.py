@@ -322,7 +322,7 @@ def print_stats_worker(STARTED_TIMESTAMP):
 
 def main():
     clients = []
-    all_indecies = []
+    all_indices = []
 
     # Set the timestamp
     STARTED_TIMESTAMP = int(time.time())
@@ -349,7 +349,7 @@ def main():
         print("Creating indices.. ")
 
         indices = generate_indices(es)
-        all_indecies.extend(indices)
+        all_indicies.extend(indices)
 
         try:
             #wait for cluster to be green if nothing else is set
@@ -404,7 +404,7 @@ def main():
                             flag = True
                             
                 print("Cleaning up created indices.. "),
-                cleanup_indices(es, all_indecies)
+                cleanup_indices(es, all_indicies)
 
     print("\nTest is done! Final results:")
     print_stats(STARTED_TIMESTAMP)
@@ -413,7 +413,7 @@ def main():
     if not NO_CLEANUP:
         print("Cleaning up created indices.. "),
 
-        cleanup_indices(es, all_indecies)
+        cleanup_indices(es, all_indicies)
 
         print("Done!")  # # Main runner
 
