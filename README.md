@@ -38,6 +38,10 @@ The generation of documents is being processed before the run, so it will not ov
 | `--no-cleanup` | Boolean field. Don't delete the indices after completion |False|
 | `--stats-frequency` | How frequent to show the statistics |30|
 | `--not-green` | Script doesn't wait for the cluster to be green |False|
+| `--ca-file` | Path to Certificate file ||
+| `--no-verify` | No verify SSL certificates|False|
+| `--username` | HTTP authentication Username ||
+| `--password` | HTTP authentication Password ||
 
 
 ### Examples
