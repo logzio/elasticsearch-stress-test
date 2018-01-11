@@ -63,7 +63,7 @@ parser.add_argument("--not-green", dest="green", action="store_false", help="Scr
 parser.set_defaults(green=True)
 
 parser.add_argument("--ca-file", dest="cafile", default="", help="Path to your certificate file")
-parser.add_argument("--no-verify", default=True, action="store_false", help="Do not verify certificate")
+parser.add_argument("--no-verify", default=False, dest="no_verify", action="store_true", help="Do not verify certificate")
 
 parser.add_argument("--username", dest="auth_username", default="", help="HTTP authentication Username")
 parser.add_argument("--password", dest="auth_password", default="", help="HTTP authentication Password")
@@ -85,7 +85,7 @@ NO_CLEANUP = args.no_cleanup
 STATS_FREQUENCY = args.stats_frequency
 WAIT_FOR_GREEN = args.green
 CA_FILE = args.cafile
-VERIFY_CERTS = args.no_verify
+VERIFY_CERTS =  not args.no_verify
 AUTH_USERNAME = args.auth_username
 AUTH_PASSWORD = args.auth_password
 
@@ -362,14 +362,13 @@ def main():
          
             if AUTH_USERNAME and AUTH_PASSWORD:
                 auth = (AUTH_USERNAME, AUTH_PASSWORD)
-           
+
             es = Elasticsearch(
                 esaddress,
                 http_auth=auth,
                 verify_certs=VERIFY_CERTS,
                 ssl_context=context,
                 timeout=60)
-
         except Exception as e:
             print("Could not connect to elasticsearch!")
             print(e)
