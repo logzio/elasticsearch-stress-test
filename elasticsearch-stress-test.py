@@ -30,11 +30,16 @@ import json
 # Try and import elasticsearch
 try:
     from elasticsearch import Elasticsearch
+    from elasticsearch.connection import create_ssl_context
 
 except:
     print("Could not import elasticsearch..")
     print("Try: pip install elasticsearch")
     sys.exit(1)
+
+
+import urllib3
+urllib3.disable_warnings()
 
 # Set a parser object
 parser = argparse.ArgumentParser()
@@ -54,8 +59,14 @@ parser.add_argument("--max-size-per-field", type=int, default=1000, help="Max co
 parser.add_argument("--no-cleanup", default=False, action='store_true', help="Don't delete the indices upon finish")
 parser.add_argument("--stats-frequency", type=int, default=30,
                     help="Number of seconds to wait between stats prints (default 30)")
-parser.add_argument("--not-green", dest="green", action="store_false")
+parser.add_argument("--not-green", dest="green", action="store_false", help="Script doesn't wait for the cluster to be green")
 parser.set_defaults(green=True)
+
+parser.add_argument("--ca-file", dest="cafile", default="", help="Path to your certificate file")
+parser.add_argument("--no-verify", default=False, dest="no_verify", action="store_true", help="Do not verify certificate")
+
+parser.add_argument("--username", dest="auth_username", default="", help="HTTP authentication Username")
+parser.add_argument("--password", dest="auth_password", default="", help="HTTP authentication Password")
 
 # Parse the arguments
 args = parser.parse_args()
@@ -73,6 +84,10 @@ MAX_SIZE_PER_FIELD = args.max_size_per_field
 NO_CLEANUP = args.no_cleanup
 STATS_FREQUENCY = args.stats_frequency
 WAIT_FOR_GREEN = args.green
+CA_FILE = args.cafile
+VERIFY_CERTS =  not args.no_verify
+AUTH_USERNAME = args.auth_username
+AUTH_PASSWORD = args.auth_password
 
 # timestamp placeholder
 STARTED_TIMESTAMP = 0
@@ -85,6 +100,8 @@ indices = []
 documents = []
 documents_templates = []
 es = None  # Will hold the elasticsearch session
+
+
 
 # Thread safe
 success_lock = Lock()
@@ -262,8 +279,10 @@ def generate_indices(es):
             es.indices.create(index=temp_index, body={"settings": {"number_of_shards": NUMBER_OF_SHARDS,
                                                                    "number_of_replicas": NUMBER_OF_REPLICAS}})
 
-        except:
+        except Exception as e:
             print("Could not create index. Is your cluster ok?")
+            print(e)
+            sys.exit(1)
 
     # Return the indices
     return temp_indices
@@ -323,6 +342,8 @@ def print_stats_worker(STARTED_TIMESTAMP):
 def main():
     clients = []
     all_indices = []
+    auth = None 
+    context = None
 
     # Set the timestamp
     STARTED_TIMESTAMP = int(time.time())
@@ -335,10 +356,22 @@ def main():
             # We increase the timeout here from the default value (10 seconds)
             # to ensure we wait for requests to finish even if the cluster is overwhelmed
             # and it takes a bit longer to process one bulk.
-            es = Elasticsearch(esaddress, timeout=60)
 
+            if CA_FILE:
+                context = create_ssl_context(cafile=CA_FILE)
+         
+            if AUTH_USERNAME and AUTH_PASSWORD:
+                auth = (AUTH_USERNAME, AUTH_PASSWORD)
+
+            es = Elasticsearch(
+                esaddress,
+                http_auth=auth,
+                verify_certs=VERIFY_CERTS,
+                ssl_context=context,
+                timeout=60)
         except Exception as e:
             print("Could not connect to elasticsearch!")
+            print(e)
             sys.exit(1)
 
         # Generate docs

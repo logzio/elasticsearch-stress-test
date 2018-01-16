@@ -38,6 +38,12 @@ The generation of documents is being processed before the run, so it will not ov
 | `--no-cleanup` | Boolean field. Don't delete the indices after completion |False|
 | `--stats-frequency` | How frequent to show the statistics |30|
 | `--not-green` | Script doesn't wait for the cluster to be green |False|
+| `--no-verify` | No verify SSL certificates|False|
+| `--ca-file` | Path to Certificate file ||
+| `--username` | HTTP authentication Username ||
+| `--password` | HTTP authentication Password ||
+
+
 
 
 ### Examples
@@ -51,6 +57,20 @@ Run the test on ES cluster 1.2.3.4, with 10 indices, 10 random documents with up
  python elasticsearch-stress-test.py --es_address 1.2.3.4 --indices 10 --documents 10 --clients 1 --seconds 300 --number-of-shards 1 --number-of-replicas 0 --bulk-size 5000 --max-fields-per-document 10 --max-size-per-field 50 --no-cleanup --stats-frequency 15
 ```
 
+Run the test with ssl
+```bash
+ python elasticsearch-stress-test.py --es_address https://1.2.3.4 --indices 5 --documents 5 --clients 1 --ca-file /path/ca.pem
+```
+
+Run the test with ssl without verify the certificate
+```bash
+ python elasticsearch-stress-test.py --es_address https://1.2.3.4 --indices 5 --documents 5 --clients 1 --no-verify
+```
+
+Run the test with HTTP Authentification
+```bash
+ python elasticsearch-stress-test.py --es_address 1.2.3.4 --indices 5 --documents 5 --clients 1 --username elastic --password changeme
+```
 ### Contribution
 You are more then welcome!
 Please open a PR or issues here.
