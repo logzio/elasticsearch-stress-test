@@ -1,11 +1,11 @@
 # Elasticsearch Stress Test
 
 ### Overview
-This script generates a bunch of documents, and indexes as much as it can to elasticsearch. While doing so, it prints out metrics to the screen to let you follow how your cluster is doing.
+This script generates a bunch of documents, and indexes as much as it can to Elasticsearch. While doing so, it prints out metrics to the screen to let you follow how your cluster is doing.
 
 ### How to use
 * Save this script
-* Make sure you have python 2.7+
+* Make sure you have Python 2.7+
 * pip install elasticsearch
 
 ### How does it work
@@ -20,11 +20,11 @@ The generation of documents is being processed before the run, so it will not ov
 ### Mandatory Parameters
 | Parameter | Description |
 | --- | --- |
-| `--es_address` | Address of the Elasticsearch cluster (no protocol and port). You can supple mutiple clusters here, but only **one** node in each cluster (preferably the client node) |
+| `--es_address` | Address of the Elasticsearch cluster (no protocol and port). You can supply mutiple clusters here, but only **one** node in each cluster (preferably the client node) |
 | `--indices` | Number of indices to write to |
 | `--documents` | Number of template documents that hold the same mapping |
 | `--clients` | Number of threads that send bulks to ES |
-| `--seconds` | How long should the test run. Note: it might take a bit longer, as sending of all bulks who's creation has been initiated is allowed |
+| `--seconds` | How long should the test run. Note: it might take a bit longer, as sending of all bulks whose creation has been initiated is allowed |
 
 
 ### Optional Parameters
@@ -47,22 +47,22 @@ The generation of documents is being processed before the run, so it will not ov
 
 
 ### Examples
-Run the test for 2 elasticsearch clusters, with 4 indices on each, 5 random documents, dont wait for the cluster to be green, open 5 different writing threads and run the script for 120 seconds
+Run the test for 2 Elasticsearch clusters, with 4 indices on each, 5 random documents, don't wait for the cluster to be green, open 5 different writing threads and run the script for 120 seconds
 ```bash
 python elasticsearch-stress-test.py  --es_address 1.2.3.4 1.2.3.5 --indices 4 --documents 5 --seconds 120 --not-green --clients 5
 ```
 
-Run the test on ES cluster 1.2.3.4, with 10 indices, 10 random documents with up to 10 fields in each, the size of each field on each document can be up to 50 chars, each index will have 1 shard and no replicas, the test will run from 1 client (thread) for 300 seconds, will print statistics every 15 seconds, will index in bulks of 5000 documents and will leave everything in elasticsearch after the test
+Run the test on ES cluster 1.2.3.4, with 10 indices, 10 random documents with up to 10 fields in each, the size of each field on each document can be up to 50 chars, each index will have 1 shard and no replicas, the test will run from 1 client (thread) for 300 seconds, will print statistics every 15 seconds, will index in bulks of 5000 documents and will leave everything in Elasticsearch after the test
 ```bash
  python elasticsearch-stress-test.py --es_address 1.2.3.4 --indices 10 --documents 10 --clients 1 --seconds 300 --number-of-shards 1 --number-of-replicas 0 --bulk-size 5000 --max-fields-per-document 10 --max-size-per-field 50 --no-cleanup --stats-frequency 15
 ```
 
-Run the test with ssl
+Run the test with SSL
 ```bash
  python elasticsearch-stress-test.py --es_address https://1.2.3.4 --indices 5 --documents 5 --clients 1 --ca-file /path/ca.pem
 ```
 
-Run the test with ssl without verify the certificate
+Run the test with SSL without verify the certificate
 ```bash
  python elasticsearch-stress-test.py --es_address https://1.2.3.4 --indices 5 --documents 5 --clients 1 --no-verify
 ```
