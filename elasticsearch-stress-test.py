@@ -64,6 +64,7 @@ parser.set_defaults(green=True)
 
 parser.add_argument("--ca-file", dest="cafile", default="", help="Path to your certificate file")
 parser.add_argument("--no-verify", default=False, dest="no_verify", action="store_true", help="Do not verify certificate")
+parser.add_argument("--forever", default=False, action="store_true", help="Running the test until some chaos is introduced")
 
 parser.add_argument("--username", dest="auth_username", default="", help="HTTP authentication Username")
 parser.add_argument("--password", dest="auth_password", default="", help="HTTP authentication Password")
@@ -82,6 +83,7 @@ BULK_SIZE = args.bulk_size
 MAX_FIELDS_PER_DOCUMENT = args.max_fields_per_document
 MAX_SIZE_PER_FIELD = args.max_size_per_field
 NO_CLEANUP = args.no_cleanup
+FOREVER = args.forever
 STATS_FREQUENCY = args.stats_frequency
 WAIT_FOR_GREEN = args.green
 CA_FILE = args.cafile
@@ -451,7 +453,12 @@ def main():
         print("Done!")  # # Main runner
 
 try:
-    main()
+    while True:
+        if FOREVER:
+            main()
+    else:
+
+     main()
 
 except Exception as e:
     print("Got unexpected exception. probably a bug, please report it.")
