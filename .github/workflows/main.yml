@@ -1,0 +1,33 @@
+name: git-secrets
+
+# Controls when the workflow will run
+# Triggers the workflow on push or pull request events but only for the main branch
+on: [push]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "main"
+  git-secrets:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-18.04
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Check Out Source Code
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Installing dependencies
+        run:
+          sudo apt-get install git less openssh-server
+      - name: Installing scanning tool
+        run: |
+          brew install git-secrets
+          git secrets --install
+          git secrets --register-aws 
+      - name: Running scanning tool
+        run:
+          git secrets --scan
